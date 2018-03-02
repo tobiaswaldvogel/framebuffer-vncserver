@@ -5,13 +5,11 @@ VNC server for Linux framebuffer devices.
 [![Build Status](https://travis-ci.org/ponty/framebuffer-vncserver.svg?branch=master)](https://travis-ci.org/ponty/framebuffer-vncserver)
 
 The goal is to check remote embedded Linux systems without X, so only the remote display is implemented. 
-(no input, no file transfer,..)
+Partially keyboard support via uinput.
 
-The code is based on a LibVNC example for Android:
-https://github.com/LibVNC/libvncserver/blob/master/examples/androidvncserver.c
+The code was optimized for best performance with low CPU load.
+This fork uses directly the fb for libvncserver instead of creating an intermiediate buffer and doing bit shifting.
 
-All input handling was removed, command-line parameters port and fbdev were added.
-32 bit color support was added.
 
 ### build
 
