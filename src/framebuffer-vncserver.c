@@ -89,7 +89,10 @@ static const XKEY_TO_KEY keymap[] = {
 	{ XK_Page_Down	, KEY_PAGEDOWN },
 	{ XK_Return	, KEY_ENTER },
 	{ XK_Escape	, KEY_ESC},
-	{ XK_Menu	, KEY_MENU }
+	{ XK_Menu	, KEY_MENU },
+	{ XK_BackSpace, KEY_BACKSPACE },
+	{ XK_Shift_L, KEY_LEFTSHIFT },
+	{ XK_Shift_R, KEY_RIGHTSHIFT }
 };
 
 static char fb_device[256] = "/dev/fb0";
@@ -113,11 +116,16 @@ static int line_skip_offset;
 static int line_single_offset;
 static int line_skip_counter;
 
+static int key_shift_state		= 0;
+static int key_control_state	= 0;
 
 static int translate_key(int xkey)
 {
 	const XKEY_TO_KEY *k, *end;
 	
+	if (xkey >= 'a' && xkey <= 'z')
+		xkey -= 'a' - 'A';
+
 	end = sizeof(keymap) / sizeof(keymap[0]) + keymap;
 	for (k = keymap; k < end; k++)
 		if (k->xkey == xkey)
@@ -138,6 +146,12 @@ static void enable_uinput_keys(int fd)
 static void keyevent(rfbBool down,rfbKeySym xkey,rfbClientPtr cl)
 {
 	int	vkey;
+
+fprintf(stderr, "key %d %02x, down %d\n", xkey, xkey, down);
+
+	if (xkey == XK_Shift_L || xkey == XK_Shift_R)
+		key_shift_state = down;
+		
 
 	vkey = translate_key(xkey);
 	if (!vkey)
